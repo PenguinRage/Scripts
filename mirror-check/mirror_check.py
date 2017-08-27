@@ -11,15 +11,20 @@ class bColors:
 
 def get_mirrors(url):
     request = requests.get(url)
+    command = "all"
+
+    if len(sys.argv) > 1:
+        command = sys.argv[1]
+
     for row in request.json():
         if sum(row['branches']) == 3:
-            if sys.argv[1] == "green" or sys.argv[1] == "all":
+            if command == "green" or command == "all":
                 greenify(row)
         elif sum(row['branches']) == 0:
-            if sys.argv[1] == "red" or sys.argv[1] == "all":
+            if command == "red" or command == "all":
                 redify(row)
         else:
-            if sys.argv[1] == "yellow" or sys.argv[1] == "all":
+            if command == "yellow" or command == "all":
                 yellowify(row)
 
 
