@@ -45,11 +45,11 @@ def categorize(row):
 
 def greenify(row):
     if args.status == None or args.status == "green":
-        print(bColors.OKGREEN + "✔ ✔ ✔ " + row['country'] + " " + row['url'] + bColors.ENDC)
+        print(bColors.OKGREEN + "✔ ✔ ✔ " + row['country'] + " " + row['url'] + " " + str(row['last_sync']) + bColors.ENDC)
 
 def redify(row):
     if args.status == None or args.status == "red":
-        print(bColors.FAIL + "✘ ✘ ✘ " + row['country'] + " " + row['url'] + bColors.ENDC)
+        print(bColors.FAIL + "✘ ✘ ✘ " + row['country'] + " " + row['url'] + " " + str(row['last_sync']) + bColors.ENDC)
 
 def yellowify(row):
     if args.status == None or args.status == "yellow":
@@ -59,7 +59,7 @@ def yellowify(row):
                 status += "✔ "
             else:
                 status += "✘ "
-        print(bColors.WARNING + status + row['country'] + " " + row['url'] + bColors.HEADER + bColors.ENDC)
+        print(bColors.WARNING + status + row['country'] + " " + row['url'] + " " + str(row['last_sync']) + bColors.ENDC)
 
 if __name__ == '__main__':
     get_mirrors("http://repo.manjaro.org/status.json")
