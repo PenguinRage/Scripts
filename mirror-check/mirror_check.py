@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import requests, argparse
 
+# Created by by Ian Cleasby 2017
+
 class bColors:
     HEADER = '\033[95m'
     OKGREEN = '\033[92m'
