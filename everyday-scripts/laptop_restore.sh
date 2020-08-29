@@ -3,16 +3,19 @@
 
 #!/bin/bash
 
-cryptsetup open --type luks /dev/sda2 root
+sudo su
 
-mount -t ext4 /dev/mapper/root /mnt
+cryptsetup luksOpen /dev/sda2 ssd
+cryptsetup luksOpen /dev/sda3 swap
 
-mount /dev/sda1 /mnt/boot
-mount --bind /dev /mnt/dev
-mount --bind /dev/pts /mnt/dev/pts
-mount --bind /proc /mnt/proc
-mount --bind /sys /mnt/sys
+mount /dev/mapper/ssd /mnt
+mount /dev/sda1 /mnt/boot/efi
 
+mount -t proc proc /mnt/proc
+mount -t sysfs sys /mnt/sys
+mount -o bind /dev /mnt/dev
+mount -t devpts pts /mnt/dev/pts/
+mount -o bind /run /mnt/run
 cp /etc/resolv.conf /mnt/etc/resolv.conf
 
-chroot /mnt /bin/bash
+chroot /mnt
