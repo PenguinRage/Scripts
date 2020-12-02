@@ -67,7 +67,11 @@ def run_operations():
 
 
 def get_mirrors(url):
-    request = requests.get(url)
+    try:
+        request = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
+
     for row in request.json():
         if current_region == row['country']:
             categorize(row)
