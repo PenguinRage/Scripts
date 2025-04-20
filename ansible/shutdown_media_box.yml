@@ -1,0 +1,7 @@
+---
+- hosts: media-box
+  become: true
+  tasks:
+    - name: Shutdown media-box
+      command:
+        cmd: shutdown
