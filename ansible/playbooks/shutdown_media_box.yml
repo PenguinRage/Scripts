@@ -1,0 +1,15 @@
+---
+- hosts: media-box
+  become: true
+  tasks:
+    - name: Stop media-related services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      loop:
+        - qbittorrent-nox
+        - jellyfin
+    
+    - name: Shutdown media-box
+      command:
+        cmd: shutdown
