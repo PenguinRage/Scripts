@@ -1,0 +1,12 @@
+all:
+  hosts:
+    media-box:
+      ansible_host: media-box
+      ansible_user: penguinrage # Uncomment and set if not using default user
+      # ansible_password: <PASSWORD> # Uncomment and set if not using SSH keys
+      # ansible_port: <SSH_PORT>     # Uncomment and set if not using default SSH port 22
+      # ansible_become: true        # Uncomment to use privilege escalation (sudo/su)
+      # ansible_become_method: sudo  # Specify privilege escalation method if needed
+      # ansible_become_user: root    # Specify user to become if needed
+  vars:
+    # Define any variables that apply to all hosts here
