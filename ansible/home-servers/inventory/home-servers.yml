@@ -8,3 +8,9 @@ all:
       # ansible_become: true        # Uncomment to use privilege escalation (sudo/su)
       # ansible_become_method: sudo  # Specify privilege escalation method if needed
       # ansible_become_user: root    # Specify user to become if needed
+    rpi4-server:
+      ansible_user: pi
+      ansible_host: server.local
+    rpi1-server:
+      ansible_user: dietpi
+      ansible_host: 192.168.1.125
