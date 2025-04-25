@@ -8,5 +8,3 @@ all:
       # ansible_become: true        # Uncomment to use privilege escalation (sudo/su)
       # ansible_become_method: sudo  # Specify privilege escalation method if needed
       # ansible_become_user: root    # Specify user to become if needed
-  vars:
-    # Define any variables that apply to all hosts here
