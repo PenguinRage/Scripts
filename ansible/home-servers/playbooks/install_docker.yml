@@ -1,0 +1,57 @@
+---
+- name: Install Docker on Debian and Grant User Permissions
+  hosts: media_box  # Replace with your target host group or hostname
+  become: true             # Run tasks with root privileges initially
+
+  vars:
+    docker_package_name: docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+    your_user: "{{ ansible_user }}" 
+
+  tasks:
+    - name: Ensure necessary packages are installed for apt
+      apt:
+        name: apt-transport-https ca-certificates curl gnupg lsb-release
+        state: present
+        update_cache: true
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker repository to apt sources
+      apt_repository:
+        repo: deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+        state: present
+        filename: docker
+
+    - name: Install Docker packages
+      apt:
+        name: "{{ docker_package_name }}"
+        state: present
+        update_cache: true
+
+    - name: Ensure Docker service is started and enabled
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add user to the docker group
+      user:
+        name: "{{ your_user }}"
+        groups: docker
+        append: true
+
+    - name: Apply group membership (requires a new login or reboot)
+      command: newgrp docker
+      become: false
+
+    - name: Verify Docker can be run without sudo
+      command: docker info
+      become: false
+      register: docker_info_output
+
+    - name: Display Docker info output
+      debug:
+        var: docker_info_output.stdout
