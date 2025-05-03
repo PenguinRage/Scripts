@@ -1,0 +1,24 @@
+---
+- name: Add Jellyfin movies
+  hosts: media-box 
+  become: true  # Run tasks with sudo privileges
+  vars:
+    download_path: /home/qbittorrent-nox/Downloads
+    destination_path: /media/movies
+
+  tasks:
+    - name: Set recursive permissions to 755 in the Downloads directory
+      ansible.builtin.command: "chmod -R 755 *"
+      args:
+        chdir: "{{ download_path }}"
+
+    - name: Find directories in the Downloads directory
+      ansible.builtin.find:
+        paths: "{{ download_path }}"
+        file_type: directory
+      register: found_directories
+
+    - name: Move directories to /media/movies
+      ansible.builtin.command: "mv '{{ item.path }}' '{{ destination_path }}/'"
+      loop: "{{ found_directories.files }}"
+      when: item.path != "{{ download_path }}"
