@@ -13,7 +13,7 @@
         file_type: directory
       register: found_directories
 
-    - name: Move directories to /media/movies
+    - name: Move directories to /mnt/storage/movies
       ansible.builtin.command: "mv '{{ item.path }}' '{{ destination_path }}/'"
       loop: "{{ found_directories.files }}"
       when: item.path != "{{ download_path }}"
