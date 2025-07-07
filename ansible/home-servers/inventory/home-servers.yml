@@ -2,7 +2,7 @@ all:
   hosts:
     media-box:
       ansible_host: media-box
-      ansible_user: penguinrage # Uncomment and set if not using default user
+      ansible_user: penguinrage
     rpi4-server:
       ansible_user: pi
       ansible_host: server.local
