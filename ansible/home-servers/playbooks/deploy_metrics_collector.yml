@@ -1,0 +1,69 @@
+---
+- name: Deploy metrics-collector to media-box
+  hosts: media-box
+  become: true
+
+  vars:
+    repo_url: https://github.com/PenguinRage/metrics-collector.git
+    deploy_dir: /home/penguinrage/src/metrics-collector
+    stack_dir: /home/penguinrage/metrics-stack
+    git_branch: main
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') | default('', true) }}"
+
+  tasks:
+    - name: Ensure git is installed
+      apt:
+        name: git
+        state: present
+
+    - name: Remove existing deploy directory
+      file:
+        path: "{{ deploy_dir }}"
+        state: absent
+
+    - name: Clone metrics-collector repo
+      command: git clone --depth 1 -b {{ git_branch }} https://{{ github_token }}@github.com/PenguinRage/metrics-collector.git {{ deploy_dir }}
+      when: github_token | length > 0
+      become: false
+      no_log: true
+      environment:
+        GIT_TERMINAL_PROMPT: "0"
+
+    - name: Clone metrics-collector repo (public)
+      command: git clone --depth 1 -b {{ git_branch }} {{ repo_url }} {{ deploy_dir }}
+      when: github_token | length == 0
+      become: false
+      environment:
+        GIT_TERMINAL_PROMPT: "0"
+
+    - name: Copy docker-compose stack files
+      copy:
+        src: "{{ deploy_dir }}/infra/"
+        dest: "{{ stack_dir }}"
+        remote_src: true
+        mode: preserve
+      become: false
+
+    - name: Copy Grafana dashboard provisioning
+      copy:
+        src: "{{ deploy_dir }}/infra/grafana/provisioning/"
+        dest: "{{ stack_dir }}/grafana/provisioning/"
+        remote_src: true
+        mode: preserve
+      become: false
+
+    - name: Build metrics-collector Docker image
+      docker_image:
+        name: penguinrage/metrics-collector
+        tag: latest
+        source: build
+        build:
+          path: "{{ deploy_dir }}"
+          pull: true
+      become: false
+
+    - name: Restart metrics-collector stack
+      command: docker compose up -d --force-recreate
+      args:
+        chdir: "{{ stack_dir }}"
+      become: false
